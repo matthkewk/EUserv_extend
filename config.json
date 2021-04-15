@@ -1,0 +1,67 @@
+{
+	"log": {
+		"access": "/var/log/v2ray/access.log",
+		"error": "/var/log/v2ray/error.log",
+		"loglevel": "warning"
+	},
+	"inbounds": [{
+			"port": 32592,
+			"protocol": "vmess",
+			"settings": {
+				"clients": [{
+					"id": "0ebd5573-36ec-4ff7-a4ff-c50226f2e0a3",
+					"level": 1,
+					"alterId": 0
+				}]
+			},
+			"streamSettings": {
+				"network": "ws"
+			},
+			"sniffing": {
+				"enabled": true,
+				"destOverride": [
+					"http",
+					"tls"
+				]
+			}
+		}
+	],
+ "outbounds": [
+    {
+      "tag":"IP4_out",
+      "protocol": "freedom",
+      "settings": {}
+    },
+    {
+      "tag":"IP6_out",
+      "protocol": "freedom",
+      "settings": {
+        "domainStrategy": "UseIPv6" // 指定使用 IPv6
+      }
+    }
+  ],
+	"dns": {
+		"servers": [
+			"https+local://cloudflare-dns.com/dns-query",
+			"1.1.1.1",
+			"1.0.0.1",
+			"8.8.8.8",
+			"8.8.4.4",
+			"localhost"
+		]
+	},
+  "routing": {
+    "rules": [
+      {
+        "type": "field",
+        "outboundTag": "IP6_out",
+        "domain": ["geosite:netflix"] // netflix 走 IPv6
+      },
+      {
+        "type": "field",
+        "outboundTag": "IP4_out",
+        "network": "udp,tcp"// 其余走 IPv4
+      }
+    ]
+  }
+}
